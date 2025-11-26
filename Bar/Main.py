@@ -1,3 +1,4 @@
+from threading import Thread as th
 from time import time
 
 
@@ -26,18 +27,14 @@ class Bar:
         self.shap3  = "█"
         self.shap4  = "▐"
     
-    
     def color_bar(self, value=0):
         if value < 50:
-            color_bar = self.white
-        elif 50 <=  value < 85:
-            color_bar = self.yellow
-        elif 85 <=  value < 100.00:
-            color_bar = self.red
-        elif value == 100.00:
-            color_bar = self.green
-        else: color_bar = self.green
-        return color_bar
+            return self.white
+        elif value < 85:
+            return self.yellow
+        elif value < 100:
+            return self.red
+        return self.green
         
     def calculate_block(self, precent=0):
         calculate = int((precent * self.block) / 100)
@@ -62,6 +59,8 @@ class Bar:
         if self.checkt == True:
             print(f"{color}{sumt:.2f}sec{self.reset}", end="")
         print(f"  {self.yellow}{self.text}{reset}", end="")
+        if precentage >= 100:
+            print("\n")
 
 
     def calculate_time(self):
@@ -85,5 +84,10 @@ class Bar:
         self.filled= processd + 1
         self.text  = text
         self.update()
+        
+    def status(self, process, processd, text="", check_bar=True, count=1):
+        p = th(target=self.get_process_processed, args=(process, processd, text, check_bar))
+        p.start()
+        p.join()
         
         
